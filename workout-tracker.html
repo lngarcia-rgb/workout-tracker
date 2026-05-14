@@ -1,0 +1,388 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>2026 Beebelle and Lucs Big Butt Workout!!!!</title>
+<link href="https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500&family=Playfair+Display:wght@700;900&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #0d0d0d;
+    --surface: #161616;
+    --card: #1c1c1c;
+    --border: #2a2a2a;
+    --accent: #f0a0c8;
+    --accent2: #c8f060;
+    --text: #e8e8e0;
+    --muted: #666;
+  }
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body { background: var(--bg); color: var(--text); font-family: 'DM Mono', monospace; min-height: 100vh; padding: 2rem 1rem 5rem; }
+
+  header { max-width: 900px; margin: 0 auto 2rem; display: flex; align-items: flex-end; justify-content: space-between; gap: 1rem; flex-wrap: wrap; padding-bottom: 1.5rem; border-bottom: 1px solid var(--border); }
+  h1 { font-family: 'Playfair Display', serif; font-size: clamp(1.8rem, 5vw, 3rem); letter-spacing: -1px; line-height: 1; color: var(--accent); }
+  .subtitle { font-size: 11px; color: var(--muted); margin-top: 5px; text-transform: uppercase; letter-spacing: 0.1em; }
+  .stats-bar { display: flex; gap: 2rem; align-items: flex-end; }
+  .stat { text-align: right; }
+  .stat-num { font-size: 1.6rem; font-weight: 500; color: var(--accent); line-height: 1; }
+  .stat-label { font-size: 10px; color: var(--muted); text-transform: uppercase; letter-spacing: 0.1em; margin-top: 2px; }
+
+  .progress-wrap { max-width: 900px; margin: 0 auto 2rem; }
+  .progress-label { display: flex; justify-content: space-between; font-size: 10px; color: var(--muted); margin-bottom: 6px; text-transform: uppercase; letter-spacing: 0.08em; }
+  .progress-bar-bg { height: 2px; background: var(--border); border-radius: 2px; overflow: hidden; }
+  .progress-bar-fill { height: 100%; background: var(--accent); border-radius: 2px; transition: width 0.4s ease; }
+
+  .plan-legend { max-width: 900px; margin: 0 auto 2rem; display: grid; grid-template-columns: repeat(auto-fit, minmax(120px, 1fr)); gap: 6px; }
+  .legend-item { background: var(--card); border: 0.5px solid var(--border); border-radius: 8px; padding: 8px 10px; }
+  .legend-day { font-size: 9px; color: var(--muted); text-transform: uppercase; letter-spacing: 0.1em; margin-bottom: 3px; }
+  .legend-type { font-size: 11px; font-weight: 500; }
+  .type-upper { color: #a0c8f0; }
+  .type-lower { color: var(--accent); }
+  .type-hiit  { color: var(--accent2); }
+  .type-rest  { color: var(--muted); }
+
+  .week-grid { max-width: 900px; margin: 0 auto; display: flex; flex-direction: column; gap: 6px; }
+  .col-headers { display: grid; grid-template-columns: 48px repeat(7, 1fr) 32px; gap: 5px; margin-bottom: 4px; padding-bottom: 8px; border-bottom: 1px solid var(--border); }
+  .col-h { font-size: 9px; color: var(--muted); text-transform: uppercase; letter-spacing: 0.1em; text-align: center; }
+  .week-row { display: grid; grid-template-columns: 48px repeat(7, 1fr) 32px; gap: 5px; align-items: center; }
+  .week-label { font-size: 10px; color: var(--muted); letter-spacing: 0.05em; }
+
+  .month-divider { grid-column: 1 / -1; font-size: 9px; letter-spacing: 0.25em; text-transform: uppercase; color: var(--accent); padding: 10px 0 2px; border-top: 1px solid var(--border); margin-top: 6px; }
+  .month-divider:first-child { border-top: none; margin-top: 0; padding-top: 0; }
+
+  .day-btn { aspect-ratio: 1; border-radius: 7px; background: var(--card); border: 1px solid var(--border); cursor: pointer; display: flex; flex-direction: column; align-items: center; justify-content: center; transition: all 0.15s ease; gap: 1px; padding: 3px 2px; }
+  .day-btn:hover:not([disabled]):not(.out-of-year):not(.type-rest) { transform: translateY(-1px); }
+  .day-num { font-size: 9px; color: var(--muted); line-height: 1; }
+  .day-dot { font-size: 11px; line-height: 1; color: var(--border); }
+  .day-type-tag { font-size: 7px; text-transform: uppercase; letter-spacing: 0.05em; opacity: 0.7; line-height: 1; }
+
+  .day-btn.type-upper { border-color: #1a2a3a; }
+  .day-btn.type-upper .day-type-tag { color: #a0c8f0; }
+  .day-btn.type-upper:hover:not(.out-of-year) { border-color: #a0c8f0; }
+  .day-btn.type-lower { border-color: #2a1020; }
+  .day-btn.type-lower .day-type-tag { color: var(--accent); }
+  .day-btn.type-lower:hover:not(.out-of-year) { border-color: var(--accent); }
+  .day-btn.type-hiit { border-color: #1a2a0a; }
+  .day-btn.type-hiit .day-type-tag { color: var(--accent2); }
+  .day-btn.type-hiit:hover:not(.out-of-year) { border-color: var(--accent2); }
+  .day-btn.type-rest { opacity: 0.25; cursor: default; pointer-events: none; }
+
+  .day-btn.done.type-upper { background: #a0c8f0; border-color: #a0c8f0; }
+  .day-btn.done.type-upper .day-num, .day-btn.done.type-upper .day-dot, .day-btn.done.type-upper .day-type-tag { color: #051420; opacity: 1; }
+  .day-btn.done.type-lower { background: var(--accent); border-color: var(--accent); }
+  .day-btn.done.type-lower .day-num, .day-btn.done.type-lower .day-dot, .day-btn.done.type-lower .day-type-tag { color: #2a0014; opacity: 1; }
+  .day-btn.done.type-hiit { background: var(--accent2); border-color: var(--accent2); }
+  .day-btn.done.type-hiit .day-num, .day-btn.done.type-hiit .day-dot, .day-btn.done.type-hiit .day-type-tag { color: #1a2a00; opacity: 1; }
+
+  .day-btn.out-of-year { opacity: 0.12; cursor: default; pointer-events: none; }
+
+  .note-btn { background: none; border: none; cursor: pointer; color: var(--muted); font-size: 13px; padding: 3px; border-radius: 4px; transition: color 0.15s; display: flex; align-items: center; justify-content: center; }
+  .note-btn:hover { color: var(--accent); }
+  .note-btn.has-note { color: var(--accent); }
+
+  .tip { max-width: 900px; margin: 0 auto 1.5rem; font-size: 10px; color: var(--muted); letter-spacing: 0.05em; }
+
+  .modal-overlay { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.82); z-index: 100; align-items: center; justify-content: center; padding: 1rem; }
+  .modal-overlay.open { display: flex; }
+  .modal { background: var(--surface); border: 1px solid var(--border); border-radius: 14px; padding: 1.5rem; width: 100%; max-width: 480px; max-height: 90vh; overflow-y: auto; }
+  .modal-title { font-family: 'Playfair Display', serif; color: var(--accent); font-size: 1.15rem; }
+  .modal-sub { font-size: 11px; color: var(--muted); margin-top: 4px; margin-bottom: 1rem; }
+
+  .workout-list { margin: 0.5rem 0; }
+  .workout-item { display: flex; align-items: baseline; gap: 8px; padding: 6px 0; border-bottom: 0.5px solid var(--border); font-size: 12px; }
+  .workout-item:last-child { border-bottom: none; }
+  .workout-name { color: var(--text); flex: 1; line-height: 1.4; }
+  .workout-sets { color: var(--muted); font-size: 10px; white-space: nowrap; }
+
+  textarea { width: 100%; background: var(--card); border: 1px solid var(--border); border-radius: 8px; color: var(--text); font-family: 'DM Mono', monospace; font-size: 12px; padding: 10px 12px; resize: vertical; min-height: 70px; outline: none; line-height: 1.6; margin-top: 1rem; }
+  textarea:focus { border-color: var(--accent); }
+
+  .modal-actions { display: flex; gap: 8px; margin-top: 1rem; justify-content: flex-end; }
+  .btn { font-family: 'DM Mono', monospace; font-size: 11px; padding: 7px 14px; border-radius: 6px; cursor: pointer; border: 1px solid var(--border); background: transparent; color: var(--text); transition: all 0.15s; letter-spacing: 0.04em; }
+  .btn:hover { border-color: var(--muted); }
+  .btn-primary { background: var(--accent); border-color: var(--accent); color: #2a0014; font-weight: 500; }
+  .btn-primary:hover { opacity: 0.9; }
+
+  @media (max-width: 520px) { .day-type-tag { display: none; } .stats-bar { gap: 1rem; } }
+</style>
+</head>
+<body>
+
+<header>
+  <div>
+    <h1>Beebelle and Lucs Big Butt Workout!!!! 2026</h1>
+    <p class="subtitle">6-day plan — click to log &bull; double-click for exercises</p>
+  </div>
+  <div class="stats-bar">
+    <div class="stat">
+      <div class="stat-num" id="total-done">0</div>
+      <div class="stat-label">done</div>
+    </div>
+    <div class="stat">
+      <div class="stat-num" id="streak">0</div>
+      <div class="stat-label">wk streak</div>
+    </div>
+    <div class="stat">
+      <div class="stat-num" id="pct">0%</div>
+      <div class="stat-label">of year</div>
+    </div>
+  </div>
+</header>
+
+<div class="progress-wrap">
+  <div class="progress-label">
+    <span>2026 progress</span>
+    <span id="progress-text">0 / 312 workout days</span>
+  </div>
+  <div class="progress-bar-bg">
+    <div class="progress-bar-fill" id="progress-fill" style="width:0%"></div>
+  </div>
+</div>
+
+<div class="plan-legend">
+  <div class="legend-item"><div class="legend-day">Mon &amp; Thu</div><div class="legend-type type-upper">Upper body</div></div>
+  <div class="legend-item"><div class="legend-day">Tue &amp; Fri</div><div class="legend-type type-lower">Lower body</div></div>
+  <div class="legend-item"><div class="legend-day">Wed &amp; Sat</div><div class="legend-type type-hiit">Cardio &amp; HIIT</div></div>
+  <div class="legend-item"><div class="legend-day">Sunday</div><div class="legend-type type-rest">Rest day</div></div>
+</div>
+
+<div class="week-grid" id="week-grid">
+  <div class="col-headers">
+    <div></div>
+    <div class="col-h">Mon</div><div class="col-h">Tue</div><div class="col-h">Wed</div>
+    <div class="col-h">Thu</div><div class="col-h">Fri</div><div class="col-h">Sat</div>
+    <div class="col-h">Sun</div>
+    <div></div>
+  </div>
+</div>
+
+<div class="modal-overlay" id="modal">
+  <div class="modal">
+    <div class="modal-title" id="modal-title"></div>
+    <div class="modal-sub" id="modal-sub"></div>
+    <div class="workout-list" id="modal-workout"></div>
+    <textarea id="modal-textarea" placeholder="How'd it go? PRs hit, energy level, notes..."></textarea>
+    <div class="modal-actions">
+      <button class="btn" id="modal-cancel">Close</button>
+      <button class="btn btn-primary" id="modal-save">Save note</button>
+    </div>
+  </div>
+</div>
+
+<script>
+const KEY = 'slim-thick-2026';
+const MONTHS = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+const DAY_NAMES = ['Mon','Tue','Wed','Thu','Fri','Sat','Sun'];
+
+const DAY_TYPE = ['upper','lower','hiit','upper','lower','hiit','rest'];
+
+const WORKOUTS = [
+  { title: 'Upper Body — Monday', exercises: [
+    { name: 'Bench Press', sets: '4 × 10–12 reps' },
+    { name: 'Lat Pulldowns', sets: '4 × 12–15 reps' },
+    { name: 'Dumbbell Shoulder Press', sets: '4 × 8–10 reps' },
+    { name: 'Bicep Curls + Tricep Extensions (superset)', sets: '4 × 12 reps each' },
+    { name: 'Russian Twists', sets: '4 × 30 reps' },
+    { name: 'Planks', sets: '3 × 4 × 30 sec' },
+    { name: 'Crunches', sets: '4 × 20 reps' },
+  ]},
+  { title: 'Lower Body — Tuesday', exercises: [
+    { name: 'Squats', sets: '4 × 8–10 reps' },
+    { name: 'Hip Thrusts', sets: '3 × 12–15 reps' },
+    { name: 'Sumo Deadlifts', sets: '3 × 10–12 reps' },
+    { name: 'Lunges', sets: '4 × 6–10 reps each side' },
+    { name: 'Hip Abduction + Adduction (superset)', sets: '3 × 10 reps each' },
+    { name: 'Plank Shoulder Taps + Lying Wipers (superset)', sets: '3 × 10 reps each' },
+  ]},
+  { title: 'Cardio & HIIT — Wednesday', exercises: [
+    { name: 'Power Squats', sets: '3 × 30 sec / 10 sec rest' },
+    { name: 'Mountain Climbers', sets: '3 × 30 sec / 10 sec rest' },
+    { name: 'Lunge to Knee', sets: '3 × 30 sec / 10 sec rest' },
+    { name: 'Knee Push-ups', sets: '3 × 30 sec / 10 sec rest' },
+    { name: 'Tuck Jumps', sets: '3 × 30 sec / 10 sec rest' },
+    { name: 'Jump Squats', sets: '3 × 30 sec / 10 sec rest' },
+  ]},
+  { title: 'Upper Body — Thursday', exercises: [
+    { name: 'Arm Circles', sets: '3 × 30 reps' },
+    { name: 'Seated Rows', sets: '4 × 12–15 reps' },
+    { name: 'Standing Dumbbell Press', sets: '4 × 10–12 reps' },
+    { name: 'Incline Dumbbell Press', sets: '4 × 8–10 reps' },
+    { name: 'Hammer Curls + Dips (superset)', sets: '3 × 10–12 reps each' },
+    { name: "Captain's Chair Knee Raises + Russian Twists (superset)", sets: '3 × 12 reps each' },
+  ]},
+  { title: 'Lower Body — Friday', exercises: [
+    { name: 'Leg Press', sets: '3 × 10 reps' },
+    { name: 'Fire Hydrant', sets: '2 × 20 reps' },
+    { name: 'Deadlift', sets: '4 × 6–10 reps' },
+    { name: 'Hip Thrusts', sets: '3 × 30 reps' },
+    { name: 'Glute Ham Raise', sets: '4 × 10 reps' },
+    { name: 'Standing Calf Raise', sets: '5 × 25 reps (10 sec hold)' },
+    { name: 'Hip Abduction + Adduction (superset)', sets: '3 × 12–15 reps each' },
+    { name: 'Hollow Body Hold', sets: '3 × 30 sec+' },
+  ]},
+  { title: 'Cardio & HIIT — Saturday', exercises: [
+    { name: 'High Knees', sets: '3 × 30 sec / 10 sec rest' },
+    { name: 'Jumping Jacks', sets: '3 × 30 sec / 10 sec rest' },
+    { name: 'Lateral Walk', sets: '3 × 30 sec / 10 sec rest' },
+    { name: 'Burpees', sets: '3 × 30 sec / 10 sec rest' },
+    { name: 'Air Punches', sets: '3 × 30 sec / 10 sec rest' },
+  ]},
+  null // Sunday rest
+];
+
+function load() { try { return JSON.parse(localStorage.getItem(KEY)) || {}; } catch { return {}; } }
+function save(d) { localStorage.setItem(KEY, JSON.stringify(d)); }
+let data = load();
+
+function dKey(date) {
+  return `${date.getFullYear()}-${String(date.getMonth()+1).padStart(2,'0')}-${String(date.getDate()).padStart(2,'0')}`;
+}
+function nKey(wi, di) { return `n-${wi}-${di}`; }
+function dow(d) { return (d.getDay() + 6) % 7; } // Mon=0
+function isIn2026(d) { return d.getFullYear() === 2026; }
+
+function getWeeks() {
+  const weeks = [];
+  let d = new Date(2025, 11, 29);
+  for (let w = 0; w < 54; w++) {
+    const days = [];
+    for (let i = 0; i < 7; i++) { days.push(new Date(d)); d.setDate(d.getDate()+1); }
+    weeks.push(days);
+    if (days[6].getFullYear() > 2026) break;
+  }
+  return weeks;
+}
+
+let modalCtx = {};
+
+function openModal(wi, di, date) {
+  modalCtx = { wi, di };
+  const w = WORKOUTS[di];
+  document.getElementById('modal-title').textContent = w ? w.title : 'Rest Day — Sunday';
+  document.getElementById('modal-sub').textContent = date ? `${DAY_NAMES[di]} ${date.getDate()} ${MONTHS[date.getMonth()]} 2026` : '';
+  const wl = document.getElementById('modal-workout');
+  wl.innerHTML = '';
+  if (w) {
+    w.exercises.forEach(ex => {
+      const el = document.createElement('div');
+      el.className = 'workout-item';
+      el.innerHTML = `<span class="workout-name">${ex.name}</span><span class="workout-sets">${ex.sets}</span>`;
+      wl.appendChild(el);
+    });
+  } else {
+    wl.innerHTML = '<div style="font-size:12px;color:var(--muted);padding:4px 0">Active recovery, stretching, or full rest.</div>';
+  }
+  document.getElementById('modal-textarea').value = data[nKey(wi,di)] || '';
+  document.getElementById('modal').classList.add('open');
+  setTimeout(() => document.getElementById('modal-textarea').focus(), 50);
+}
+
+document.getElementById('modal-cancel').onclick = () => document.getElementById('modal').classList.remove('open');
+document.getElementById('modal-save').onclick = () => {
+  const val = document.getElementById('modal-textarea').value.trim();
+  const k = nKey(modalCtx.wi, modalCtx.di);
+  if (val) data[k] = val; else delete data[k];
+  save(data); document.getElementById('modal').classList.remove('open'); render();
+};
+document.getElementById('modal').onclick = e => { if (e.target === document.getElementById('modal')) document.getElementById('modal').classList.remove('open'); };
+
+function render() {
+  const weeks = getWeeks();
+  const grid = document.getElementById('week-grid');
+  const hdr = grid.querySelector('.col-headers');
+  grid.innerHTML = ''; grid.appendChild(hdr);
+
+  let done = 0, total = 0, lastMonth = -1;
+
+  weeks.forEach((days, wi) => {
+    const yd = days.filter(isIn2026);
+    if (!yd.length) return;
+
+    const fm = yd[0].getMonth();
+    if (fm !== lastMonth) {
+      const div = document.createElement('div');
+      div.className = 'month-divider';
+      div.textContent = `— ${MONTHS[fm]}`;
+      grid.appendChild(div);
+      lastMonth = fm;
+    }
+
+    const row = document.createElement('div');
+    row.className = 'week-row';
+    const wl = document.createElement('div');
+    wl.className = 'week-label';
+    wl.textContent = `W${String(wi+1).padStart(2,'0')}`;
+    row.appendChild(wl);
+
+    days.forEach((date, _) => {
+      const inYear = isIn2026(date);
+      const di = dow(date);
+      const type = DAY_TYPE[di];
+      const dk = dKey(date);
+      const isDone = !!data[dk];
+      const hasNote = !!data[nKey(wi, di)];
+      if (inYear && type !== 'rest') { total++; if (isDone) done++; }
+
+      const btn = document.createElement('button');
+      btn.className = `day-btn type-${type}`;
+      if (!inYear) btn.classList.add('out-of-year');
+      if (isDone && inYear) btn.classList.add('done');
+
+      btn.innerHTML =
+        `<div class="day-num">${date.getDate()}</div>` +
+        `<div class="day-dot">${isDone ? '✓' : hasNote ? '★' : '·'}</div>` +
+        `<div class="day-type-tag">${type === 'upper' ? 'upper' : type === 'lower' ? 'lower' : type === 'hiit' ? 'hiit' : 'rest'}</div>`;
+
+      if (inYear && type !== 'rest') {
+        btn.onclick = () => { data[dk] = !data[dk]; if (!data[dk]) delete data[dk]; save(data); render(); };
+        btn.ondblclick = (e) => { e.preventDefault(); openModal(wi, di, date); };
+        btn.title = `${DAY_NAMES[di]} ${date.getDate()} ${MONTHS[date.getMonth()]} — click to log, dbl-click for workout`;
+      }
+      row.appendChild(btn);
+    });
+
+    const nb = document.createElement('button');
+    nb.className = 'note-btn';
+    const anyNote = Array.from({length:7}, (_,i) => !!data[nKey(wi,i)]).some(Boolean);
+    if (anyNote) nb.classList.add('has-note');
+    nb.innerHTML = anyNote ? '★' : '☆';
+    nb.title = anyNote ? 'Click to clear week notes' : 'Click to add week notes';
+    nb.onclick = () => {
+      if (anyNote) {
+        // Clear all notes for this week
+        for (let i = 0; i < 7; i++) delete data[nKey(wi, i)];
+        save(data); render();
+      } else {
+        const d = yd.find(d => dow(d) !== 6) || yd[0];
+        openModal(wi, dow(d), d);
+      }
+    };
+    row.appendChild(nb);
+    grid.appendChild(row);
+  });
+
+  document.getElementById('total-done').textContent = done;
+  const p = total > 0 ? Math.round(done/total*100) : 0;
+  document.getElementById('pct').textContent = p + '%';
+  document.getElementById('progress-fill').style.width = p + '%';
+  document.getElementById('progress-text').textContent = `${done} / ${total} workout days`;
+
+  // Streak: find the most recent week with any workout logged, walk back contiguously
+  let streak = 0;
+  let counting = false;
+  for (let i = weeks.length - 1; i >= 0; i--) {
+    const wd = weeks[i].filter(d => isIn2026(d) && DAY_TYPE[dow(d)] !== 'rest');
+    if (!wd.length) continue;
+    const hasAny = wd.some(d => !!data[dKey(d)]);
+    if (!counting && !hasAny) continue; // skip future/empty weeks until we find one with data
+    counting = true;
+    if (hasAny) streak++;
+    else break; // gap found, stop
+  }
+  document.getElementById('streak').textContent = streak;
+}
+
+render();
+</script>
+</body>
+</html>
