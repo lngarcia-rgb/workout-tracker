@@ -82,17 +82,42 @@
 
   .tip { max-width: 900px; margin: 0 auto 1.5rem; font-size: 10px; color: var(--muted); letter-spacing: 0.05em; }
 
-  .modal-overlay { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.82); z-index: 100; align-items: center; justify-content: center; padding: 1rem; }
+  .modal-overlay { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.82); z-index: 100; align-items: flex-end; justify-content: center; padding: 0; }
+  @media (min-width: 600px) { .modal-overlay { align-items: center; padding: 1rem; } }
   .modal-overlay.open { display: flex; }
-  .modal { background: var(--surface); border: 1px solid var(--border); border-radius: 14px; padding: 1.5rem; width: 100%; max-width: 480px; max-height: 90vh; overflow-y: auto; }
-  .modal-title { font-family: 'Playfair Display', serif; color: var(--accent); font-size: 1.15rem; }
+  .modal {
+    background: var(--surface); border: 1px solid var(--border);
+    border-radius: 20px 20px 0 0; padding: 1.25rem 1.25rem 2rem;
+    width: 100%; max-width: 520px; max-height: 88vh; overflow-y: auto;
+  }
+  @media (min-width: 600px) { .modal { border-radius: 14px; padding: 1.5rem; max-height: 90vh; } }
+  .modal-drag { width: 36px; height: 4px; background: var(--border); border-radius: 2px; margin: 0 auto 1rem; }
+  @media (min-width: 600px) { .modal-drag { display: none; } }
+  .modal-title { font-family: 'Playfair Display', serif; color: var(--accent); font-size: 1.1rem; }
   .modal-sub { font-size: 11px; color: var(--muted); margin-top: 4px; margin-bottom: 1rem; }
 
   .workout-list { margin: 0.5rem 0; }
-  .workout-item { display: flex; align-items: baseline; gap: 8px; padding: 6px 0; border-bottom: 0.5px solid var(--border); font-size: 12px; }
-  .workout-item:last-child { border-bottom: none; }
-  .workout-name { color: var(--text); flex: 1; line-height: 1.4; }
-  .workout-sets { color: var(--muted); font-size: 10px; white-space: nowrap; }
+  .exercise-block { border-bottom: 0.5px solid var(--border); padding: 8px 0; }
+  .exercise-block:last-child { border-bottom: none; }
+  .exercise-header { display: flex; align-items: center; justify-content: space-between; gap: 8px; margin-bottom: 5px; }
+  .exercise-name { color: var(--text); font-size: 12px; flex: 1; line-height: 1.4; }
+  .exercise-sets-label { color: var(--muted); font-size: 10px; white-space: nowrap; }
+  .sets-row { display: flex; flex-wrap: wrap; gap: 6px; padding-left: 2px; }
+  .set-check {
+    display: flex; align-items: center; gap: 4px;
+    font-size: 10px; color: var(--muted); cursor: pointer;
+    -webkit-tap-highlight-color: transparent;
+    user-select: none;
+  }
+  .set-check input[type=checkbox] { display: none; }
+  .set-box {
+    width: 22px; height: 22px; border-radius: 5px;
+    border: 1.5px solid var(--border); background: var(--card);
+    display: flex; align-items: center; justify-content: center;
+    font-size: 11px; transition: all 0.12s; flex-shrink: 0;
+  }
+  .set-check.checked .set-box { background: var(--accent2); border-color: var(--accent2); color: #1a2a00; }
+  .set-check:active .set-box { transform: scale(0.9); }
 
   textarea { width: 100%; background: var(--card); border: 1px solid var(--border); border-radius: 8px; color: var(--text); font-family: 'DM Mono', monospace; font-size: 12px; padding: 10px 12px; resize: vertical; min-height: 70px; outline: none; line-height: 1.6; margin-top: 1rem; }
   textarea:focus { border-color: var(--accent); }
@@ -104,14 +129,62 @@
   .btn-primary:hover { opacity: 0.9; }
 
   @media (max-width: 520px) { .day-type-tag { display: none; } .stats-bar { gap: 1rem; } }
+
+  /* note pill on each day */
+  .day-btn { position: relative; }
+  .day-note-pill {
+    position: absolute; top: 2px; right: 2px;
+    width: 18px; height: 18px; border-radius: 50%;
+    background: rgba(255,255,255,0.08);
+    border: none; cursor: pointer;
+    font-size: 9px;
+    color: var(--muted); opacity: 0;
+    transition: opacity 0.15s;
+    display: flex; align-items: center; justify-content: center;
+    z-index: 2; -webkit-tap-highlight-color: transparent;
+  }
+  /* desktop: show on hover */
+  @media (hover: hover) {
+    .day-btn:hover .day-note-pill { opacity: 1; }
+  }
+  /* touch/mobile: always visible */
+  @media (hover: none) {
+    .day-note-pill { opacity: 0.6; }
+  }
+  .day-note-pill.has-note { opacity: 1; color: var(--accent); background: rgba(240,160,200,0.15); }
+  .day-btn.done .day-note-pill { background: rgba(0,0,0,0.12); color: rgba(0,0,0,0.4); }
+  .day-btn.done .day-note-pill.has-note { opacity: 1; color: rgba(0,0,0,0.6); }
+  /* ── Tabs ── */
+  .tab-bar { max-width: 900px; margin: 0 auto 2rem; display: flex; gap: 8px; }
+  .tab-btn {
+    font-family: 'DM Mono', monospace; font-size: 13px; font-weight: 500;
+    padding: 10px 28px; border-radius: 10px; cursor: pointer;
+    border: 1.5px solid var(--border); background: var(--card);
+    color: var(--muted); letter-spacing: 0.06em; transition: all 0.18s;
+  }
+  .tab-btn:hover { border-color: var(--accent); color: var(--text); }
+  .tab-btn.active { background: var(--accent); border-color: var(--accent); color: #2a0014; }
+  .tab-btn.active-lucs { background: var(--accent); border-color: var(--accent); color: #2a0014; }
+  .loading-bar {
+    max-width: 900px; margin: -1rem auto 1.5rem;
+    font-size: 10px; color: var(--muted); text-transform: uppercase; letter-spacing: 0.1em;
+    min-height: 16px;
+  }
+
 </style>
 </head>
 <body>
 
+<div class="tab-bar">
+  <button class="tab-btn active-lucs" id="tab-lucs" onclick="switchTab('lucs')">Lucs 🩷</button>
+  <button class="tab-btn active" id="tab-beebelle" onclick="switchTab('beebelle')" >Beebelle 🌸</button>
+</div>
+<div class="loading-bar" id="loading-msg"></div>
+
 <header>
   <div>
-    <h1>Beebelle and Lucs Big Butt Workout!!!! 2026</h1>
-    <p class="subtitle">6-day plan — click to log &bull; double-click for exercises</p>
+    <h1 id="main-title">Lucs 2026</h1>
+    <p class="subtitle">6-day plan — tap to log &bull; tap ✎ for exercises &amp; notes</p>
   </div>
   <div class="stats-bar">
     <div class="stat">
@@ -158,6 +231,7 @@
 
 <div class="modal-overlay" id="modal">
   <div class="modal">
+    <div class="modal-drag"></div>
     <div class="modal-title" id="modal-title"></div>
     <div class="modal-sub" id="modal-sub"></div>
     <div class="workout-list" id="modal-workout"></div>
@@ -178,7 +252,21 @@
     "sb_publishable_TUXxS89K1B8ED3h7FwCIUA_MUazPj-W"
   );
 
-  const STORAGE_KEY = "tracker-data";
+  let activeTab = 'lucs'; // 'lucs' or 'beebelle'
+  const STORAGE_KEYS = { lucs: 'tracker-lucs-2026', beebelle: 'tracker-beebelle-2026' };
+
+  function getStorageKey() { return STORAGE_KEYS[activeTab]; }
+
+  function switchTab(tab) {
+    activeTab = tab;
+    document.getElementById('tab-lucs').className = 'tab-btn' + (tab === 'lucs' ? ' active' : '');
+    document.getElementById('tab-beebelle').className = 'tab-btn' + (tab === 'beebelle' ? ' active' : '');
+    document.getElementById('main-title').textContent = tab === 'lucs' ? 'Lucs 2026 🩷' : 'Beebelle 2026 🌸';
+    render(); // instant from cache, no fetch
+  }
+
+  // expose to global scope for onclick
+  window.switchTab = switchTab;
 
   const MONTHS = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
   const DAY_NAMES = ['Mon','Tue','Wed','Thu','Fri','Sat','Sun'];
@@ -239,28 +327,38 @@
     null
   ];
 
-  let data = {};
+  const dataCache = { lucs: {}, beebelle: {} };
+  function data() { return dataCache[activeTab]; }
 
-  async function loadData() {
+  async function loadTab(tab) {
     const { data: row } = await supabase
       .from("workout_tracker")
       .select("*")
-      .eq("key", STORAGE_KEY)
+      .eq("key", STORAGE_KEYS[tab])
       .single();
+    dataCache[tab] = row?.value || {};
+    if (activeTab === tab) render();
+  }
 
-    if (row?.value) {
-      data = row.value;
-    }
-
+  async function loadAllTabs() {
+    document.getElementById('loading-msg').textContent = 'Loading…';
+    await Promise.all([loadTab('lucs'), loadTab('beebelle')]);
+    document.getElementById('loading-msg').textContent = '';
     render();
+    // Scroll to current month divider
+    const dividers = document.querySelectorAll('.month-divider');
+    const now = new Date();
+    const monthName = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'][now.getMonth()];
+    const target = Array.from(dividers).find(el => el.textContent.includes(monthName));
+    if (target) target.scrollIntoView({ behavior: 'smooth', block: 'start' });
   }
 
   async function saveData() {
     await supabase
       .from("workout_tracker")
       .upsert({
-        key: STORAGE_KEY,
-        value: data
+        key: getStorageKey(),
+        value: data()
       });
   }
 
@@ -282,25 +380,37 @@
 
   function getWeeks() {
     const weeks = [];
-    let d = new Date(2025, 11, 29);
+    // Start from Mon of the week containing May 1 2026 (May 1 = Friday, so Mon = Apr 27)
+    let d = new Date(2026, 3, 27); // Apr 27 2026
 
-    for (let w = 0; w < 54; w++) {
+    for (let w = 0; w < 40; w++) {
       const days = [];
-
       for (let i = 0; i < 7; i++) {
         days.push(new Date(d));
         d.setDate(d.getDate()+1);
       }
-
       weeks.push(days);
-
       if (days[6].getFullYear() > 2026) break;
     }
-
     return weeks;
   }
 
+  function isVisible(date) {
+    // Only show May 2026 onwards
+    return date.getFullYear() === 2026 && date.getMonth() >= 4;
+  }
+
   let modalCtx = {};
+
+  function setCheckKey(wi, di, exIdx, setIdx) {
+    return `sc-${wi}-${di}-${exIdx}-${setIdx}`;
+  }
+
+  function parseSetCount(setsStr) {
+    // Extract the number before × — e.g. "4 × 10–12 reps" → 4, "3 × 30 sec" → 3
+    const m = setsStr.match(/^(\d+)/);
+    return m ? parseInt(m[1]) : 3;
+  }
 
   function openModal(wi, di, date) {
     modalCtx = { wi, di };
@@ -314,25 +424,69 @@
       `${DAY_NAMES[di]} ${date.getDate()} ${MONTHS[date.getMonth()]} 2026`;
 
     const wl = document.getElementById('modal-workout');
-
     wl.innerHTML = '';
 
     if (w) {
-      w.exercises.forEach(ex => {
-        const el = document.createElement('div');
+      w.exercises.forEach((ex, exIdx) => {
+        const block = document.createElement('div');
+        block.className = 'exercise-block';
 
-        el.className = 'workout-item';
+        const header = document.createElement('div');
+        header.className = 'exercise-header';
+        header.innerHTML =
+          `<span class="exercise-name">${ex.name}</span>
+           <span class="exercise-sets-label">${ex.sets}</span>`;
+        block.appendChild(header);
 
-        el.innerHTML =
-          `<span class="workout-name">${ex.name}</span>
-          <span class="workout-sets">${ex.sets}</span>`;
+        // Build set checkboxes
+        const numSets = parseSetCount(ex.sets);
+        const setsRow = document.createElement('div');
+        setsRow.className = 'sets-row';
 
-        wl.appendChild(el);
+        for (let s = 0; s < numSets; s++) {
+          const ck = setCheckKey(wi, di, exIdx, s);
+          const isDone = !!data()[ck];
+
+          const label = document.createElement('label');
+          label.className = 'set-check' + (isDone ? ' checked' : '');
+          label.title = `Set ${s+1}`;
+
+          const inp = document.createElement('input');
+          inp.type = 'checkbox';
+          inp.checked = isDone;
+
+          const box = document.createElement('div');
+          box.className = 'set-box';
+          box.textContent = isDone ? '✓' : '';
+
+          const txt = document.createElement('span');
+          txt.textContent = `set ${s+1}`;
+
+          label.appendChild(inp);
+          label.appendChild(box);
+          label.appendChild(txt);
+
+          label.addEventListener('click', (e) => {
+            e.preventDefault();
+            const nowDone = !data()[ck];
+            if (nowDone) data()[ck] = true;
+            else delete data()[ck];
+            label.classList.toggle('checked', nowDone);
+            box.textContent = nowDone ? '✓' : '';
+            inp.checked = nowDone;
+            saveData().catch(err => console.error('Set save failed', err));
+          });
+
+          setsRow.appendChild(label);
+        }
+
+        block.appendChild(setsRow);
+        wl.appendChild(block);
       });
     }
 
     document.getElementById('modal-textarea').value =
-      data[nKey(wi, di)] || '';
+      data()[nKey(wi, di)] || '';
 
     document.getElementById('modal').classList.add('open');
   }
@@ -341,20 +495,14 @@
     document.getElementById('modal').classList.remove('open');
   };
 
-  document.getElementById('modal-save').onclick = async () => {
-    const val =
-      document.getElementById('modal-textarea').value.trim();
-
+  document.getElementById('modal-save').onclick = () => {
+    const val = document.getElementById('modal-textarea').value.trim();
     const k = nKey(modalCtx.wi, modalCtx.di);
-
-    if (val) data[k] = val;
-    else delete data[k];
-
-    await saveData();
-
+    if (val) data()[k] = val;
+    else delete data()[k];
     document.getElementById('modal').classList.remove('open');
-
     render();
+    saveData().catch(err => console.error('Note save failed', err));
   };
 
   function render() {
@@ -373,7 +521,7 @@
     let lastMonth = -1;
 
     weeks.forEach((days, wi) => {
-      const yd = days.filter(isIn2026);
+      const yd = days.filter(isVisible);
 
       if (!yd.length) return;
 
@@ -404,7 +552,7 @@
       row.appendChild(wl);
 
       days.forEach((date) => {
-        const inYear = isIn2026(date);
+        const inYear = isVisible(date);
 
         const di = dow(date);
 
@@ -412,9 +560,9 @@
 
         const dk = dKey(date);
 
-        const isDone = !!data[dk];
+        const isDone = !!data()[dk];
 
-        const hasNote = !!data[nKey(wi, di)];
+        const hasNote = !!data()[nKey(wi, di)];
 
         if (inYear && type !== 'rest') {
           total++;
@@ -432,24 +580,31 @@
 
         btn.innerHTML =
           `<div class="day-num">${date.getDate()}</div>
-          <div class="day-dot">${isDone ? '✓' : hasNote ? '★' : '·'}</div>
+          <div class="day-dot">${isDone ? '✓' : '·'}</div>
           <div class="day-type-tag">${type}</div>`;
 
         if (inYear && type !== 'rest') {
-          btn.onclick = async () => {
-            data[dk] = !data[dk];
-
-            if (!data[dk]) delete data[dk];
-
-            await saveData();
-
-            render();
-          };
-
-          btn.ondblclick = (e) => {
-            e.preventDefault();
-
+          // Notes pill button
+          const pill = document.createElement('button');
+          pill.className = 'day-note-pill' + (hasNote ? ' has-note' : '');
+          pill.title = hasNote ? 'Edit note' : 'Add note';
+          pill.textContent = hasNote ? '★' : '✎';
+          pill.onclick = (e) => {
+            e.stopPropagation();
             openModal(wi, di, date);
+          };
+          btn.appendChild(pill);
+
+          btn.onclick = () => {
+            data()[dk] = !data()[dk];
+            if (!data()[dk]) delete data()[dk];
+            render();
+            saveData().catch(err => {
+              console.error('Save failed', err);
+              data()[dk] = !data()[dk];
+              if (!data()[dk]) delete data()[dk];
+              render();
+            });
           };
         }
 
@@ -472,22 +627,48 @@
 
     document.getElementById('progress-text').textContent =
       `${done} / ${total} workout days`;
+
+    // Streak: walk back from most recent week with any data logged
+    let streak = 0;
+    let counting = false;
+    for (let i = weeks.length - 1; i >= 0; i--) {
+      const wd = weeks[i].filter(d => isVisible(d) && DAY_TYPE[dow(d)] !== 'rest');
+      if (!wd.length) continue;
+      const hasAny = wd.some(d => !!data()[dKey(d)]);
+      if (!counting && !hasAny) continue;
+      counting = true;
+      if (hasAny) streak++;
+      else break;
+    }
+    document.getElementById('streak').textContent = streak;
   }
 
   supabase
     .channel("tracker-live")
     .on(
       "postgres_changes",
-      {
-        event: "*",
-        schema: "public",
-        table: "workout_tracker"
-      },
-      loadData
+      { event: "*", schema: "public", table: "workout_tracker" },
+      (payload) => {
+        const changedKey = payload.new?.key || payload.old?.key;
+        // Find which tab this change belongs to
+        const tab = Object.keys(STORAGE_KEYS).find(t => STORAGE_KEYS[t] === changedKey);
+        if (!tab) return;
+        // Update that tab's cache directly from the payload — no extra fetch
+        if (payload.new?.value) {
+          dataCache[tab] = payload.new.value;
+        } else if (payload.eventType === 'DELETE') {
+          dataCache[tab] = {};
+        }
+        // Only re-render if it's the currently visible tab
+        if (tab === activeTab) render();
+      }
     )
     .subscribe();
 
-  loadData();
+  // Load all tabs once on startup, then switches are instant
+  switchTab('lucs');
+  loadAllTabs();
 </script>
 </body>
+</html>
 </html>
