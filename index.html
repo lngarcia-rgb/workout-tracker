@@ -984,6 +984,42 @@
     saveData().catch(err => console.error('Note save failed', err));
   };
 
+  function updateStats() {
+    const weeks = getWeeks();
+    let done = 0, total = 0;
+    weeks.forEach(days => {
+      days.filter(isVisible).forEach(date => {
+        const di = dow(date);
+        if (DAY_TYPE[di] !== 'rest') {
+          total++;
+          if (!!data()[dKey(date)]) done++;
+        }
+      });
+    });
+    document.getElementById('total-done').textContent = done;
+    const p = total > 0 ? Math.round(done/total*100) : 0;
+    document.getElementById('pct').textContent = p + '%';
+    document.getElementById('progress-fill').style.width = p + '%';
+    document.getElementById('progress-text').textContent = `${done} / ${total} workout days`;
+    // streak
+    const todayKey = dKey(new Date());
+    let currentWeekIdx = -1;
+    for (let i = 0; i < weeks.length; i++) {
+      if (weeks[i].some(d => dKey(d) === todayKey)) { currentWeekIdx = i; break; }
+    }
+    let streak = 0, counting = false;
+    for (let i = weeks.length-1; i >= 0; i--) {
+      const wd = weeks[i].filter(d => isVisible(d) && DAY_TYPE[dow(d)] !== 'rest');
+      if (!wd.length) continue;
+      const hasAny = wd.some(d => !!data()[dKey(d)]);
+      if (!counting && !hasAny) continue;
+      counting = true;
+      if (hasAny) streak++; else break;
+    }
+    const crownSize = streak === 0 ? '0.8em' : streak < 3 ? '1em' : streak < 6 ? '1.3em' : streak < 10 ? '1.6em' : '2em';
+    document.getElementById('streak').innerHTML = `${streak} <span class="streak-crown" style="font-size:${crownSize}">👑</span>`;
+  }
+
   function render() {
     const weeks = getWeeks();
 
@@ -1055,6 +1091,7 @@
         const btn = document.createElement('button');
 
         btn.className = `day-btn type-${type}`;
+        btn.dataset.dk = dk;
 
         if (!inYear) btn.classList.add('out-of-year');
 
@@ -1078,22 +1115,22 @@
           btn.appendChild(pill);
 
           btn.onclick = () => {
-            data()[dk] = !data()[dk];
-            if (!data()[dk]) delete data()[dk];
-            render();
-            // bounce pop on the re-rendered button
-            setTimeout(() => {
-              const allBtns = document.querySelectorAll('.day-btn');
-              allBtns.forEach(b => {
-                if (b.querySelector('.day-num') && b.querySelector('.day-num').textContent == date.getDate()) {
-                  const tag = b.querySelector('.day-type-tag');
-                  if (tag && tag.textContent.includes(type==='upper'?'waist':type==='lower'?'booty':'burn')) {
-                    b.classList.add('pop');
-                    setTimeout(() => b.classList.remove('pop'), 450);
-                  }
-                }
-              });
-            }, 10);
+            const nowDone = !data()[dk];
+            data()[dk] = nowDone;
+            if (!nowDone) delete data()[dk];
+
+            // ── Update just this button in-place, no full re-render ──
+            btn.classList.toggle('done', nowDone);
+            const dot = btn.querySelector('.day-dot');
+            if (dot) dot.textContent = nowDone ? '🩷' : '·';
+
+            // Update stats bar only (lightweight)
+            updateStats();
+
+            // bounce pop
+            btn.classList.add('pop');
+            setTimeout(() => btn.classList.remove('pop'), 450);
+
             // ding sound
             try {
               const ctx = new (window.AudioContext || window.webkitAudioContext)();
@@ -1107,11 +1144,15 @@
               o.start(ctx.currentTime);
               o.stop(ctx.currentTime + 0.3);
             } catch(e) {}
+
             saveData().catch(err => {
               console.error('Save failed', err);
-              data()[dk] = !data()[dk];
+              // revert on failure
+              data()[dk] = !nowDone;
               if (!data()[dk]) delete data()[dk];
-              render();
+              btn.classList.toggle('done', !nowDone);
+              if (dot) dot.textContent = !nowDone ? '🩷' : '·';
+              updateStats();
             });
           };
         }
