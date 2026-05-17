@@ -692,18 +692,18 @@
 </div>
 
 <div class="plan-legend">
-  <div class="legend-item"><div class="legend-day">Mon &amp; Thu</div><div class="legend-type type-upper">💪 arms & waist</div></div>
-  <div class="legend-item"><div class="legend-day">Tue &amp; Fri</div><div class="legend-type type-lower">🍑 booty sculpt</div></div>
-  <div class="legend-item"><div class="legend-day">Wed &amp; Sat</div><div class="legend-type type-hiit">🔥 cardio burn</div></div>
-  <div class="legend-item"><div class="legend-day">Sunday</div><div class="legend-type type-rest">🛁 beauty rest</div></div>
+  <div class="legend-item"><div class="legend-day">Mon &amp; Fri</div><div class="legend-type type-upper">💪 arms & waist</div></div>
+  <div class="legend-item"><div class="legend-day">Tue &amp; Sat</div><div class="legend-type type-lower">🍑 booty sculpt</div></div>
+  <div class="legend-item"><div class="legend-day">Wed &amp; Sun</div><div class="legend-type type-hiit">🔥 cardio burn</div></div>
+  <div class="legend-item"><div class="legend-day">Thursday</div><div class="legend-type type-rest">🛁 beauty rest</div></div>
 </div>
 
 <div class="week-grid" id="week-grid">
   <div class="col-headers">
     <div></div>
     <div class="col-h">mon 💙</div><div class="col-h">tue 🩷</div><div class="col-h">wed 💚</div>
-    <div class="col-h">thu 💙</div><div class="col-h">fri 🩷</div><div class="col-h">sat 💚</div>
-    <div class="col-h">sun ☁️</div>
+    <div class="col-h">thu 🛁</div><div class="col-h">fri 🩷</div><div class="col-h">sat 💚</div>
+    <div class="col-h">sun 🔥</div>
     <div></div>
   </div>
 </div>
@@ -751,60 +751,60 @@
   const DAY_NAMES = ['Mon','Tue','Wed','Thu','Fri','Sat','Sun'];
 
   const DAY_TYPE = ['upper','lower','hiit','rest','upper','lower','hiit'];
-  
+
   const WORKOUTS = [
-    { title: 'Upper Body — Monday', exercises: [
-      { name: 'Bench Press', sets: '4 × 10–12 reps' },
-      { name: 'Lat Pulldowns', sets: '4 × 12–15 reps' },
-      { name: 'Dumbbell Shoulder Press', sets: '4 × 8–10 reps' },
-      { name: 'Bicep Curls + Tricep Extensions (superset)', sets: '4 × 12 reps each' },
-      { name: 'Russian Twists', sets: '4 × 30 reps' },
-      { name: 'Planks', sets: '3 × 4 × 30 sec' },
-      { name: 'Crunches', sets: '4 × 20 reps' },
-    ]},
-    { title: 'Lower Body — Tuesday', exercises: [
-      { name: 'Squats', sets: '4 × 8–10 reps' },
-      { name: 'Hip Thrusts', sets: '3 × 12–15 reps' },
-      { name: 'Sumo Deadlifts', sets: '3 × 10–12 reps' },
-      { name: 'Lunges', sets: '4 × 6–10 reps each side' },
-      { name: 'Hip Abduction + Adduction (superset)', sets: '3 × 10 reps each' },
-      { name: 'Plank Shoulder Taps + Lying Wipers (superset)', sets: '3 × 10 reps each' },
-    ]},
-    { title: 'Cardio & HIIT — Wednesday', exercises: [
-      { name: 'Power Squats', sets: '3 × 30 sec / 10 sec rest' },
-      { name: 'Mountain Climbers', sets: '3 × 30 sec / 10 sec rest' },
-      { name: 'Lunge to Knee', sets: '3 × 30 sec / 10 sec rest' },
-      { name: 'Knee Push-ups', sets: '3 × 30 sec / 10 sec rest' },
-      { name: 'Tuck Jumps', sets: '3 × 30 sec / 10 sec rest' },
-      { name: 'Jump Squats', sets: '3 × 30 sec / 10 sec rest' },
-    ]},
-    { title: 'Upper Body — Thursday', exercises: [
-      { name: 'Arm Circles', sets: '3 × 30 reps' },
-      { name: 'Seated Rows', sets: '4 × 12–15 reps' },
-      { name: 'Standing Dumbbell Press', sets: '4 × 10–12 reps' },
-      { name: 'Incline Dumbbell Press', sets: '4 × 8–10 reps' },
-      { name: 'Hammer Curls + Dips (superset)', sets: '3 × 10–12 reps each' },
-      { name: "Captain's Chair Knee Raises + Russian Twists (superset)", sets: '3 × 12 reps each' },
-    ]},
-    { title: 'Lower Body — Friday', exercises: [
-      { name: 'Leg Press', sets: '3 × 10 reps' },
-      { name: 'Fire Hydrant', sets: '2 × 20 reps' },
-      { name: 'Deadlift', sets: '4 × 6–10 reps' },
-      { name: 'Hip Thrusts', sets: '3 × 30 reps' },
-      { name: 'Glute Ham Raise', sets: '4 × 10 reps' },
-      { name: 'Standing Calf Raise', sets: '5 × 25 reps (10 sec hold)' },
-      { name: 'Hip Abduction + Adduction (superset)', sets: '3 × 12–15 reps each' },
-      { name: 'Hollow Body Hold', sets: '3 × 30 sec+' },
-    ]},
-    { title: 'Cardio & HIIT — Saturday', exercises: [
-      { name: 'High Knees', sets: '3 × 30 sec / 10 sec rest' },
-      { name: 'Jumping Jacks', sets: '3 × 30 sec / 10 sec rest' },
-      { name: 'Lateral Walk', sets: '3 × 30 sec / 10 sec rest' },
-      { name: 'Burpees', sets: '3 × 30 sec / 10 sec rest' },
-      { name: 'Air Punches', sets: '3 × 30 sec / 10 sec rest' },
-    ]},
-    null
-  ];
+  { title: 'Upper Body — Monday', exercises: [
+    { name: 'Bench Press', sets: '4 × 10–12 reps' },
+    { name: 'Lat Pulldowns', sets: '4 × 12–15 reps' },
+    { name: 'Dumbbell Shoulder Press', sets: '4 × 8–10 reps' },
+    { name: 'Bicep Curls + Tricep Extensions (superset)', sets: '4 × 12 reps each' },
+    { name: 'Russian Twists', sets: '4 × 30 reps' },
+    { name: 'Planks', sets: '3 × 4 × 30 sec' },
+    { name: 'Crunches', sets: '4 × 20 reps' },
+  ]},
+  { title: 'Lower Body — Tuesday', exercises: [
+    { name: 'Squats', sets: '4 × 8–10 reps' },
+    { name: 'Hip Thrusts', sets: '3 × 12–15 reps' },
+    { name: 'Sumo Deadlifts', sets: '3 × 10–12 reps' },
+    { name: 'Lunges', sets: '4 × 6–10 reps each side' },
+    { name: 'Hip Abduction + Adduction (superset)', sets: '3 × 10 reps each' },
+    { name: 'Plank Shoulder Taps + Lying Wipers (superset)', sets: '3 × 10 reps each' },
+  ]},
+  { title: 'Cardio & HIIT — Wednesday', exercises: [
+    { name: 'Power Squats', sets: '3 × 30 sec / 10 sec rest' },
+    { name: 'Mountain Climbers', sets: '3 × 30 sec / 10 sec rest' },
+    { name: 'Lunge to Knee', sets: '3 × 30 sec / 10 sec rest' },
+    { name: 'Knee Push-ups', sets: '3 × 30 sec / 10 sec rest' },
+    { name: 'Tuck Jumps', sets: '3 × 30 sec / 10 sec rest' },
+    { name: 'Jump Squats', sets: '3 × 30 sec / 10 sec rest' },
+  ]},
+  null, // Thursday rest
+  { title: 'Upper Body — Friday', exercises: [
+    { name: 'Arm Circles', sets: '3 × 30 reps' },
+    { name: 'Seated Rows', sets: '4 × 12–15 reps' },
+    { name: 'Standing Dumbbell Press', sets: '4 × 10–12 reps' },
+    { name: 'Incline Dumbbell Press', sets: '4 × 8–10 reps' },
+    { name: 'Hammer Curls + Dips (superset)', sets: '3 × 10–12 reps each' },
+    { name: "Captain's Chair Knee Raises + Russian Twists (superset)", sets: '3 × 12 reps each' },
+  ]},
+  { title: 'Lower Body — Saturday', exercises: [
+    { name: 'Leg Press', sets: '3 × 10 reps' },
+    { name: 'Fire Hydrant', sets: '2 × 20 reps' },
+    { name: 'Deadlift', sets: '4 × 6–10 reps' },
+    { name: 'Hip Thrusts', sets: '3 × 30 reps' },
+    { name: 'Glute Ham Raise', sets: '4 × 10 reps' },
+    { name: 'Standing Calf Raise', sets: '5 × 25 reps (10 sec hold)' },
+    { name: 'Hip Abduction + Adduction (superset)', sets: '3 × 12–15 reps each' },
+    { name: 'Hollow Body Hold', sets: '3 × 30 sec+' },
+  ]},
+  { title: 'Cardio & HIIT — Sunday', exercises: [
+    { name: 'High Knees', sets: '3 × 30 sec / 10 sec rest' },
+    { name: 'Jumping Jacks', sets: '3 × 30 sec / 10 sec rest' },
+    { name: 'Lateral Walk', sets: '3 × 30 sec / 10 sec rest' },
+    { name: 'Burpees', sets: '3 × 30 sec / 10 sec rest' },
+    { name: 'Air Punches', sets: '3 × 30 sec / 10 sec rest' },
+  ]},
+];
 
   const dataCache = { lucs: {}, beebelle: {} };
   function data() { return dataCache[activeTab]; }
