@@ -752,7 +752,7 @@
 
   // ── Per-tab schedules ──
 const DAY_TYPE_BEEBELLE = ['upper','lower','hiit','rest','upper','lower','hiit'];
-const DAY_TYPE_LUCS     = ['glute','quad','cardio','rest','thigh','compound','cardio'];
+const DAY_TYPE_LUCS     = ['glute','quad','cardio','rest','thigh','compound','rest'];
 
 const WORKOUTS_BEEBELLE = [
   { title: 'Upper Body — Monday', exercises: [
@@ -848,13 +848,7 @@ const WORKOUTS_LUCS = [
     { name: 'Curtsy Lunge', sets: '3 × 15 reps each side' },
     { name: 'Standing Calf Raise', sets: '4 × 25 reps' },
   ]},
-  { title: 'Low Impact Cardio — Sunday', exercises: [
-    { name: 'Stationary Bike', sets: '20–25 min moderate' },
-    { name: 'Hip Circle Stretch', sets: '2 × 30 sec each direction' },
-    { name: 'Glute Bridge Hold', sets: '3 × 30 sec' },
-    { name: 'Lateral Band Walk', sets: '2 × 15 reps each direction' },
-    { name: 'Deep Squat Hold', sets: '3 × 30 sec' },
-  ]},
+  null, // Sunday rest
 ];
 
   const dataCache = { lucs: {}, beebelle: {} };
