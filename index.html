@@ -750,9 +750,11 @@
   const MONTHS = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
   const DAY_NAMES = ['Mon','Tue','Wed','Thu','Fri','Sat','Sun'];
 
-  const DAY_TYPE = ['upper','lower','hiit','rest','upper','lower','hiit'];
+  // ── Per-tab schedules ──
+const DAY_TYPE_BEEBELLE = ['upper','lower','hiit','rest','upper','lower','hiit'];
+const DAY_TYPE_LUCS     = ['glute','quad','cardio','rest','thigh','compound','cardio'];
 
-  const WORKOUTS = [
+const WORKOUTS_BEEBELLE = [
   { title: 'Upper Body — Monday', exercises: [
     { name: 'Bench Press', sets: '4 × 10–12 reps' },
     { name: 'Lat Pulldowns', sets: '4 × 12–15 reps' },
@@ -778,7 +780,7 @@
     { name: 'Tuck Jumps', sets: '3 × 30 sec / 10 sec rest' },
     { name: 'Jump Squats', sets: '3 × 30 sec / 10 sec rest' },
   ]},
-  null, // Thursday rest
+  null,
   { title: 'Upper Body — Friday', exercises: [
     { name: 'Arm Circles', sets: '3 × 30 reps' },
     { name: 'Seated Rows', sets: '4 × 12–15 reps' },
@@ -806,8 +808,59 @@
   ]},
 ];
 
+const WORKOUTS_LUCS = [
+  { title: 'Glute Focus — Monday', exercises: [
+    { name: 'Barbell Hip Thrusts', sets: '4 × 15–20 reps' },
+    { name: 'Glute Bridges', sets: '3 × 20 reps' },
+    { name: 'Cable Kickbacks', sets: '3 × 20 reps each side' },
+    { name: 'Donkey Kicks', sets: '3 × 20 reps each side' },
+    { name: 'Frog Pumps', sets: '3 × 25 reps' },
+    { name: 'Seated Hip Abduction', sets: '4 × 20 reps' },
+  ]},
+  { title: 'Quads & Hamstrings — Tuesday', exercises: [
+    { name: 'Leg Press', sets: '4 × 15–20 reps' },
+    { name: 'Romanian Deadlift', sets: '4 × 12–15 reps' },
+    { name: 'Leg Curl (lying or seated)', sets: '4 × 15 reps' },
+    { name: 'Leg Extension', sets: '3 × 20 reps' },
+    { name: 'Walking Lunges', sets: '3 × 20 reps each side' },
+    { name: 'Wall Sit', sets: '3 × 45 sec' },
+  ]},
+  { title: 'Stairmaster & Cardio — Wednesday', exercises: [
+    { name: 'Stairmaster', sets: '25–30 min steady pace' },
+    { name: 'Incline Treadmill Walk (15% incline)', sets: '15 min' },
+    { name: 'Hip Circles (standing)', sets: '3 × 20 each direction' },
+    { name: 'Standing Glute Squeeze', sets: '3 × 30 sec hold' },
+  ]},
+  null,
+  { title: 'Inner & Outer Thigh — Friday', exercises: [
+    { name: 'Sumo Squat', sets: '4 × 15–20 reps' },
+    { name: 'Cable Hip Abduction', sets: '4 × 20 reps each side' },
+    { name: 'Cable Hip Adduction', sets: '4 × 20 reps each side' },
+    { name: 'Lateral Band Walk', sets: '3 × 20 reps each direction' },
+    { name: 'Plie Squat Pulse', sets: '3 × 30 reps' },
+    { name: 'Inner Thigh Squeeze (ball)', sets: '3 × 25 reps' },
+  ]},
+  { title: 'Full Lower Compound — Saturday', exercises: [
+    { name: 'Romanian Deadlift', sets: '4 × 12 reps' },
+    { name: 'Bulgarian Split Squat', sets: '4 × 12 reps each side' },
+    { name: 'Step-ups (weighted)', sets: '3 × 15 reps each side' },
+    { name: 'Hip Thrust + Hip Abduction (superset)', sets: '4 × 15 reps each' },
+    { name: 'Curtsy Lunge', sets: '3 × 15 reps each side' },
+    { name: 'Standing Calf Raise', sets: '4 × 25 reps' },
+  ]},
+  { title: 'Low Impact Cardio — Sunday', exercises: [
+    { name: 'Stationary Bike', sets: '20–25 min moderate' },
+    { name: 'Hip Circle Stretch', sets: '2 × 30 sec each direction' },
+    { name: 'Glute Bridge Hold', sets: '3 × 30 sec' },
+    { name: 'Lateral Band Walk', sets: '2 × 15 reps each direction' },
+    { name: 'Deep Squat Hold', sets: '3 × 30 sec' },
+  ]},
+];
+
   const dataCache = { lucs: {}, beebelle: {} };
   function data() { return dataCache[activeTab]; }
+  function getDayType() { return activeTab === 'lucs' ? DAY_TYPE_LUCS : DAY_TYPE_BEEBELLE; }
+  function getWorkouts() { return activeTab === 'lucs' ? WORKOUTS_LUCS : WORKOUTS_BEEBELLE; }
 
   async function loadTab(tab) {
     const { data: row } = await supabase
@@ -894,7 +947,7 @@
   function openModal(wi, di, date) {
     modalCtx = { wi, di };
 
-    const w = WORKOUTS[di];
+    const w = getWorkouts()[di];
 
     document.getElementById('modal-title').textContent =
       w ? w.title : 'Rest Day — Sunday';
@@ -990,7 +1043,7 @@
     weeks.forEach(days => {
       days.filter(isVisible).forEach(date => {
         const di = dow(date);
-        if (DAY_TYPE[di] !== 'rest') {
+        if (getDayType()[di] !== 'rest') {
           total++;
           if (!!data()[dKey(date)]) done++;
         }
@@ -1009,7 +1062,7 @@
     }
     let streak = 0, counting = false;
     for (let i = weeks.length-1; i >= 0; i--) {
-      const wd = weeks[i].filter(d => isVisible(d) && DAY_TYPE[dow(d)] !== 'rest');
+      const wd = weeks[i].filter(d => isVisible(d) && getDayType()[dow(d)] !== 'rest');
       if (!wd.length) continue;
       const hasAny = wd.some(d => !!data()[dKey(d)]);
       if (!counting && !hasAny) continue;
@@ -1074,7 +1127,7 @@
 
         const di = dow(date);
 
-        const type = DAY_TYPE[di];
+        const type = getDayType()[di];
 
         const dk = dKey(date);
 
@@ -1090,7 +1143,8 @@
 
         const btn = document.createElement('button');
 
-        btn.className = `day-btn type-${type}`;
+        const cssType = type==='glute'||type==='thigh'||type==='compound'||type==='quad' ? 'lower' : type==='cardio' ? 'hiit' : type==='upper' ? 'upper' : type==='lower' ? 'lower' : type==='hiit' ? 'hiit' : type;
+        btn.className = `day-btn type-${cssType}`;
         btn.dataset.dk = dk;
 
         if (!inYear) btn.classList.add('out-of-year');
@@ -1100,7 +1154,7 @@
         btn.innerHTML =
           `<div class="day-num">${date.getDate()}</div>
           <div class="day-dot">${isDone ? '🩷' : '·'}</div>
-          <div class="day-type-tag">${type==='upper'?'💪waist':type==='lower'?'🍑booty':type==='hiit'?'🔥burn':'🛁rest'}</div>`;
+          <div class="day-type-tag">${type==='upper'?'💪waist':type==='lower'?'🍑booty':type==='hiit'?'🔥burn':type==='glute'||type==='thigh'||type==='compound'||type==='quad'?'🍑lower':type==='cardio'?'🔥burn':'🛁rest'}</div>`;
 
         if (inYear && type !== 'rest') {
           // Notes pill button
@@ -1183,7 +1237,7 @@
     let streak = 0;
     let counting = false;
     for (let i = weeks.length - 1; i >= 0; i--) {
-      const wd = weeks[i].filter(d => isVisible(d) && DAY_TYPE[dow(d)] !== 'rest');
+      const wd = weeks[i].filter(d => isVisible(d) && getDayType()[dow(d)] !== 'rest');
       if (!wd.length) continue;
       const hasAny = wd.some(d => !!data()[dKey(d)]);
       if (!counting && !hasAny) continue;
@@ -1237,7 +1291,7 @@
 
   function checkWeekComplete(weeks) {
     weeks.forEach((days, wi) => {
-      const wd = days.filter(d => isVisible(d) && DAY_TYPE[dow(d)] !== 'rest');
+      const wd = days.filter(d => isVisible(d) && getDayType()[dow(d)] !== 'rest');
       if (!wd.length) return;
       const allDone = wd.every(d => !!data()[dKey(d)]);
       if (allDone && !shownWeeks.has(wi)) {
